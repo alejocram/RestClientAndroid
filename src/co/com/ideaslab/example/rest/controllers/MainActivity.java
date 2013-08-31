@@ -3,6 +3,7 @@ package co.com.ideaslab.example.rest.controllers;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
@@ -25,8 +26,8 @@ public class MainActivity extends ListActivity {
 		label = (TextView)findViewById(R.id.label);
 		
 		try {
-			JSONObject jsonObject = RestClient.read(getString(R.string.url));
-			ArrayList<HashMap<String, String>> contactList = Contact.jsonToObject(jsonObject);
+			JSONArray jsonArray = RestClient.read(getString(R.string.url));
+			ArrayList<HashMap<String, String>> contactList = Contact.jsonToObject(jsonArray);
 			ListAdapter adapter = new SimpleAdapter(this, contactList,
 					R.layout.list_contactitem,
 					new String[] { Contact.TAG_NAME, Contact.TAG_EMAIL, Contact.TAG_PHONE_MOBILE }, 

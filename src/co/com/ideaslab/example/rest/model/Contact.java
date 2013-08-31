@@ -20,8 +20,7 @@ public class Contact {
 	public static final String TAG_PHONE_HOME = "home";
 	public static final String TAG_PHONE_OFFICE = "office";
 		
-	public static ArrayList<HashMap<String, String>> jsonToObject(JSONObject json) throws JSONException{
-		JSONArray contacts = json.getJSONArray(TAG_CONTACTS);
+	public static ArrayList<HashMap<String, String>> jsonToObject(JSONArray contacts) throws JSONException{
 		//Hashmap
 		ArrayList<HashMap<String, String>> contactList = new ArrayList<HashMap<String, String>>();
 		// looping through All Contacts
