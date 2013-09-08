@@ -17,16 +17,17 @@ import co.com.ideaslab.example.rest.services.rest.RestClient;
 
 public class MainActivity extends ListActivity {
 	private static final String TAG = MainActivity.class.getSimpleName();
-	private TextView label;
+	private static final String SHOW_ACTION = "showContacts";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list_contacts);
-		label = (TextView)findViewById(R.id.label);
-		
 		try {
-			JSONArray jsonArray = RestClient.read(getString(R.string.url));
+			StringBuffer stringBuffer = new StringBuffer();
+			stringBuffer.append(getString(R.string.url));
+			stringBuffer.append("?action="+SHOW_ACTION);
+			JSONArray jsonArray = RestClient.read(stringBuffer.toString());
 			ArrayList<HashMap<String, String>> contactList = Contact.jsonToObject(jsonArray);
 			ListAdapter adapter = new SimpleAdapter(this, contactList,
 					R.layout.list_contactitem,

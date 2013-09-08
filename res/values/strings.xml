@@ -5,5 +5,5 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
 	<string name="label">Hola RestExample</string>
-	<string name="url">http://alejocram.hol.es/ContactsService/services/ContactService.php?action=showContacts</string>
+	<string name="url">http://alejocram.hol.es/RestServerPHP/services/ContactService.php</string>
 </resources>
