@@ -6,4 +6,9 @@
     <string name="hello_world">Hello world!</string>
 	<string name="label">Hola RestExample</string>
 	<string name="url">http://alejocram.hol.es/RestServerPHP/services/ContactService.php</string>
+	<string name="action_add">Adicionar</string>
+	<string name="name_label">Nombre</string>
+	<string name="email_label">Email</string>
+	<string name="address_label">Direccion</string>
+	<string name="gender_label">Genero</string>
 </resources>

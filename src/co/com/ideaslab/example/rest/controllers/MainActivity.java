@@ -7,12 +7,17 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import co.com.ideaslab.example.rest.model.Contact;
+import co.com.ideaslab.example.rest.services.rest.ContactServiceImpl;
 import co.com.ideaslab.example.rest.services.rest.RestClient;
 
 public class MainActivity extends ListActivity {
@@ -47,6 +52,14 @@ public class MainActivity extends ListActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		Intent i = new Intent(getApplicationContext(), AddContactActivity.class);
+		startActivity(i);
+		
+		return super.onMenuItemSelected(featureId, item);
 	}
 
 }
