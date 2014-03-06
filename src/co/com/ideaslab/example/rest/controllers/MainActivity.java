@@ -10,8 +10,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -33,35 +35,16 @@ public class MainActivity extends ListActivity {
 	private static final String TAG = MainActivity.class.getSimpleName();
 	private static final int REQ_CODE_MAIN_TO_ADD = 1;
 	
+	private Context context;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		this.context = getApplicationContext();
 		//Se indica el layout que se va utilizar para este ListActivity
 		setContentView(R.layout.list_contacts);
-		//Se crea la vista
-		buildView(); 
-	}
-
-	private void buildView() {
-		//Se instancia el ContactService 
-		ContactService contactService = new ContactServiceImpl(this);
-		ArrayList<HashMap<String, String>> contactList;
-		try {
-			//Se recupera el listado de contactos
-			contactList = contactService.showContact();
-			//Se crea un adaptador para llenar el ListView, cada valor queda relacionado
-			ListAdapter adapter = new SimpleAdapter(this, contactList,
-					R.layout.list_contactitem,
-					new String[] { Contact.TAG_NAME, Contact.TAG_EMAIL, Contact.TAG_PHONE_MOBILE }, 
-					new int[] {R.id.name, R.id.email, R.id.mobile });
-			setListAdapter(adapter);
-		} catch (Exception e) {
-			//Se muestra el error en pantalla
-			Toast.makeText(this, "No hay conexion a internet", Toast.LENGTH_LONG).show();
-			e.printStackTrace();
-			//Se muestra el error en el LogCat
-			Log.e(ContactServiceImpl.TAG, e.getMessage());
-		}
+		//Se llama a la tarea asyncronica para que descargue los contactos del servidor
+		new GetContactListTask().execute("");
 	}
 
 	@Override
@@ -85,7 +68,7 @@ public class MainActivity extends ListActivity {
 		//Verifica el codigo del request code
 		if(requestCode == REQ_CODE_MAIN_TO_ADD){
 			//Se refresca la lista
-			buildView();
+//			buildView();
 			//Verifica que el codigo de respuesta este siendo controlado
 			if(resultCode == RESULT_OK){
 				//Se recupera la informacion que retorna la otra pantalla
@@ -93,7 +76,38 @@ public class MainActivity extends ListActivity {
 				String name = data.getStringExtra("name");
 				//Se expone un mensaje indicando que ya agrego
 				Toast.makeText(this, name +" ha sido agregado exitosamente", Toast.LENGTH_SHORT).show();
+				//Se vuelve a llamar el servicio ya que se acaba de agregar un nuevo contacto
+				new GetContactListTask().execute("");
 			}
+		}
+	}
+	
+	private class GetContactListTask extends AsyncTask<String, Void, ArrayList<HashMap<String, String>>>{
+
+		@Override
+		protected ArrayList<HashMap<String, String>> doInBackground(String... params) {
+			ContactService contactService = new ContactServiceImpl(context);
+			try {
+				ArrayList<HashMap<String, String>> contactList = contactService.showContact();
+				return contactList;
+			} catch (Exception e) {
+				//Se muestra el error en pantalla
+				Toast.makeText(context, "No hay conexion a internet", Toast.LENGTH_LONG).show();
+				e.printStackTrace();
+				//Se muestra el error en el LogCat
+				Log.e(ContactServiceImpl.TAG, e.getMessage());
+			}
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(ArrayList<HashMap<String, String>> result) {
+			//Se crea un adaptador para llenar el ListView, cada valor queda relacionado
+			ListAdapter adapter = new SimpleAdapter(context, result,
+					R.layout.list_contactitem,
+					new String[] { Contact.TAG_NAME, Contact.TAG_EMAIL, Contact.TAG_PHONE_MOBILE }, 
+					new int[] {R.id.name, R.id.email, R.id.mobile });
+			setListAdapter(adapter);
 		}
 	}
 
